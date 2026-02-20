@@ -22,4 +22,58 @@ Le projet se construit de manière incrémentale :
 4. Ajout d'une base de données persistante.
 
 ## Comment lancer le projet en local
-*(Les instructions de lancement avec kubectl et minikube seront documentées ici au fur et à mesure de l'avancement).*
+
+1. **Démarrer l'environnement :**
+```bash
+minikube start
+minikube addons enable ingress
+
+```
+
+2. **Déployer la base de données :**
+```bash
+kubectl apply -f postgres.yaml
+
+```
+
+
+3. **Déployer les microservices :**
+```bash
+kubectl apply -f service-2/k8s-service2.yaml
+kubectl apply -f service-1/k8s-service1.yaml
+
+```
+
+
+4. **Configurer la Gateway et la Sécurité :**
+```bash
+kubectl apply -f ingress.yaml
+kubectl apply -f security.yaml
+
+```
+
+
+5. **Accéder à l'application :**
+Lancez le tunnel Ingress :
+```bash
+kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8080:80
+
+```
+
+
+Ouvrez votre navigateur sur : `http://localhost:8080/service1`
+
+## Sécurité et Isolation (NetworkPolicies)
+
+Nous avons mis en place une sécurité réseau "Zero Trust" au sein du cluster. Bien que certaines configurations locales de Minikube sans plugin CNI (comme Calico) puissent ne pas appliquer les restrictions immédiatement, le code YAML fourni suit les standards de production :
+
+* **Isolation de la BDD :** Seul le `service2` possède le label autorisé pour contacter PostgreSQL sur le port 5432.
+* **Isolation du Service 2 :** Seul le `service1` est autorisé à interroger l'API du Service 2.
+
+## État d'avancement (Validation des paliers)
+
+* [x] **10/20** : Service 1 déployé (Node.js/Docker/K8s)
+* [x] **12/20** : Gateway Ingress opérationnelle (Route /service1)
+* [x] **14/20** : Service 2 intégré et communication inter-services (Service 1 -> Service 2)
+* [x] **16/20** : Base de données PostgreSQL persistante reliée au Service 2
+* [x] **18/20** : Sécurisation du cluster via NetworkPolicies (Isolation des flux)
