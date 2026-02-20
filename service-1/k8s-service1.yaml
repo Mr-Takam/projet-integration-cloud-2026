@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: service1
-        image: mrtakam/service1:v1
+        image: mrtakam/service1:v2
         ports:
         - containerPort: 3000
 ---
