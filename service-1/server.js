@@ -5,7 +5,7 @@ const port = 3000;
 app.get('/', (req, res) => {
   res.json({
     status: "success",
-    message: "Hello Cyril et Abdou ! Service 1 opérationnel.",
+    message: "Hello c'est Cyril et Abdou ! Service 1 opérationnel.",
     timestamp: new Date()
   });
 });
